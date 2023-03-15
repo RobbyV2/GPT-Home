@@ -1,4 +1,5 @@
 {
     "getid": "False",
-    "name": "User"
+    "name": "User",
+    "apikey": ""
 }
