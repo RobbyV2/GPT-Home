@@ -12,9 +12,10 @@ import PySimpleGUI as sg
 import json
 import openai
 import asyncio
+from gtts import gTTS
 
-#TODO: Fix Window Status, add stuff with names, show debug console
-#IMPORTANT: Remove api key before making push
+#TODO: Fix Window Status, add stuff with names, show debug console, weather, gui
+#IMPORTANT: Remove api key and microphone index before making push
 
 print("Imports completed")
 
@@ -24,6 +25,7 @@ engine = pyttsx3.init()
 global status
 global getid
 global apikey
+global indexid
 status = "Ok!"
 
 idstatus = open("config.json", "r")
@@ -42,7 +44,16 @@ apikey = str(key)
 
 openai.api_key = apikey
 
+indexid = 51
+
 def generate(prompt):
+    n = open("config.json", "r")
+    tmpn = n.read()
+    n.close()
+    n2 = json.loads(tmpn)
+    n = n2["name"]
+    jname = str(n)
+    name = "My name is " + jname
     response = openai.ChatCompletion.create(
     model="gpt-3.5-turbo",
     messages=[
@@ -51,6 +62,7 @@ def generate(prompt):
             {"role": "system", "content": "If someone asks you to only do something, you must do it."},
             {"role": "system", "content": "You are GPT, a large language model trained by OpenAI. Answer as concisely as possible."},
             {"role": "system", "content": "Any of your answers should be at most 15 words. Your responses should be complete sentences rewording the original question. They should also be straight to the point and use non-complex words."},
+            {"role": "system", "content": name},
             {"role": "user", "content": prompt}
         ]
     )
@@ -59,8 +71,9 @@ def generate(prompt):
 def say(text):
     engine.say(text)
     engine.runAndWait()
+    
 
-async def get_command():
+def get_command():
     #update_window()
     #try:
         if(getid == True):
@@ -88,7 +101,7 @@ async def get_command():
         return command
 
 def run():
-    action = asyncio.run(get_command())
+    action = get_command()
     #update_window()
     print("Started Run")
     if ('hey' in str(action).lower() or 'hello' in str(action).lower()or 'ok' in str(action).lower() or 'gpt' in str(action).lower()):
@@ -106,6 +119,30 @@ def run():
             say('The current time is ' + time)
             c2 = str(current_time.year) + ", " + str(current_time.month) + ", " + str(current_time.day)
             say(c2)
+#        elif 'change my name' in str(action).lower():
+#            say("What would you like your new name to be?")
+#            microphone = sr.Microphone(device_index=51)
+#            with microphone as source:
+#                print("Waiting for command...")
+#                voice = listener.listen(source)
+#                try:
+#                    command = listener.recognize_google(voice)
+#                except:
+#                    return
+#            data = {
+#    "getid": getid,
+#    "name": str(name),
+#    "apikey": apikey
+#                }
+#            with open('config.json', 'w') as outfile:
+#                json.dump(data, outfile)
+#            say("Your name has been changed to " + str(name))
+
+        #elif 'name' in str(action).lower():
+        #    print("Started Response")
+        #    say("Sending Request... But if you would like to change your name, say change my name.")
+        #    c = generate(action)
+        #    say(c)
         else:
             print("Started Response")
             say("Sending Request...")
@@ -115,23 +152,24 @@ def run():
 def update_window():
     sg.ChangeLookAndFeel('DarkAmber')
     layout = [[sg.Text("GPT Home is running!")],
-              #[sg.Text('Status: ' + status)],
-              [sg.Text('© 2023 Robby V2')]]
+            #[sg.Text('Status: ' + status)],
+            [sg.Button('Close')],
+            [sg.Text('© 2023 Robby V2')]]
     window = sg.Window("GPT Home", icon='logo.ico').Layout(layout)
+    event, values = window.read()
 
 async def startgui():
     while True:
         sg.ChangeLookAndFeel('DarkAmber')
-        layout = [[sg.Text("GPT Home is running!")],
+        layout = [[sg.Text("GPT Home is offline.")],
                 #[sg.Text('Status: ' + status)],
                 [sg.Button('Close')],
                 [sg.Text('© 2023 Robby V2')]]
         window = sg.Window("GPT Home", icon='logo.ico').Layout(layout)
         event, values = window.read()
-        count = count + 1
         if event == 'Close':
             sys.exit("Program Closed")
 
 while True:
-    #asyncio.run(startgui())
     run()
+    

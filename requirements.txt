@@ -1,5 +1,11 @@
 pywhatkit
 pyttsx3
 pyaudio
-speech_recognition
+SpeechRecognition
+sys
 PySimpleGUI
+json
+openai
+asyncio
+gtts
+pygame
