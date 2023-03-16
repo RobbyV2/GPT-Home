@@ -11,6 +11,8 @@ Then you may open up a console or ide to run the program. You may do this in a c
 ## Info
 GPT Home stores your config in the **config.json** file, currently the name does not do anything. However, "getid" causes the console to print out all audio devices, mainly so you can figure out which id to use as your microphone input.
 
+I also put my microphone ID (51) used from getid in the config.json file, so you will need to change that in config.json to the ID of the audio input device you want to use.
+
 Keep in mind I do not provide an api key as this may cost money, if you want to use this you will need to go to [OpenAI's Offical Website](https://platform.openai.com/account/api-keys)
 
 If you don't already have python, you may install it [here](https://www.python.org/downloads/). This should work with all python versions, but I'm currently using it on python 3.9.

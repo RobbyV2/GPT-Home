@@ -28,6 +28,13 @@ global apikey
 global indexid
 status = "Ok!"
 
+indexid = open("config.json", "r")
+tmpindexid = indexid.read()
+indexid.close()
+indexid2 = json.loads(tmpindexid)
+indexid = indexid2["getid"]
+indexid = str(indexid)
+
 idstatus = open("config.json", "r")
 tmpidstatus = idstatus.read()
 idstatus.close()
@@ -77,9 +84,9 @@ def get_command():
     #update_window()
     #try:
         if(getid == True):
-            for index, name in enumerate(sr.Microphone.list_microphone_names()): #main pc should be 51
+            for index, name in enumerate(sr.Microphone.list_microphone_names()): #my pc should be 51
                 print(f'{index}, {name}')
-        microphone = sr.Microphone(device_index=51)
+        microphone = sr.Microphone(device_index=indexid)
         with microphone as source:
             print("Waiting for command...")
             voice = listener.listen(source)
@@ -121,7 +128,7 @@ def run():
             say(c2)
 #        elif 'change my name' in str(action).lower():
 #            say("What would you like your new name to be?")
-#            microphone = sr.Microphone(device_index=51)
+#            microphone = sr.Microphone(device_index=indexid)
 #            with microphone as source:
 #                print("Waiting for command...")
 #                voice = listener.listen(source)
@@ -132,6 +139,7 @@ def run():
 #            data = {
 #    "getid": getid,
 #    "name": str(name),
+#    "indexid": indexid,
 #    "apikey": apikey
 #                }
 #            with open('config.json', 'w') as outfile:
